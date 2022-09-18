@@ -4,9 +4,9 @@ import db from "../database/connect.js";
 import { registerValidator, loginValidator } from "../middleware/validate.js";
 import { auth } from "../middleware/auth.js";
 
-const router = express.Router();
+const Router = express.Router();
 
-router.post("/register", registerValidator, async (req, res) => {
+Router.post("/register", registerValidator, async (req, res) => {
   try {
     const userExists = await db.Users.findOne({
       where: {
@@ -15,21 +15,21 @@ router.post("/register", registerValidator, async (req, res) => {
     });
 
     if (userExists) {
-      res.status(401).send("Toks vartotojas jau egzistuoja");
+      res.status(401).send("User already exist.");
       return;
     }
 
     req.body.password = await bcrypt.hash(req.body.password, 10);
 
     await db.Users.create(req.body);
-    res.send("Vartotojas sėkmingai sukurtas");
+    res.send("User created.");
   } catch (error) {
     console.log(error);
-    res.status(418).send("Įvyko serverio klaida");
+    res.status(418).send("Server error.");
   }
 });
 
-router.post("/login", loginValidator, async (req, res) => {
+Router.post("/login", loginValidator, async (req, res) => {
   try {
     const user = await db.Users.findOne({
       where: {
@@ -37,7 +37,7 @@ router.post("/login", loginValidator, async (req, res) => {
       },
     });
 
-    if (!user) return res.status(401).send("Toks vartotojas nerastas");
+    if (!user) return res.status(401).send("User doesn't exist");
 
     if (await bcrypt.compare(req.body.password, user.password)) {
       req.session.loggedin = true;
@@ -48,23 +48,28 @@ router.post("/login", loginValidator, async (req, res) => {
         email: user.email,
         role: user.role,
       };
-      res.json({ message: "Prisijungimas sėkmingas", user: req.session.user });
+      res.json({
+        message: "You successfully logged in.",
+        user: req.session.user,
+      });
     } else {
-      res.status(401).send("Nepavyko prisijungti");
+      res.status(401).send("Login failed");
     }
   } catch (error) {
     console.log(error);
-    res.status(418).send("Įvyko serverio klaida");
+    res.status(418).send("Server error.");
   }
 });
 
-router.get("/logout", (req, res) => {
+Router.get("/logout", (req, res) => {
   req.session.destroy();
-  res.send("Jūs sėkmingai atsijungėte, lauksime sugrįžtant :)");
+  res.send(
+    "You have successfully logged out, we will be waiting for you when you come back :)"
+  );
 });
 
-router.get("/check-auth", auth, async (req, res) => {
+Router.get("/check-auth", auth, async (req, res) => {
   res.json(req.session.user);
 });
 
-export default router;
+export default Router;

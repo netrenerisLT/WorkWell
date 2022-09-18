@@ -42,7 +42,26 @@ try {
   database.Ratings = Ratings(sequelize);
   database.Orders = Orders(sequelize);
 
-  await sequelize.sync({ alter: false });
+  database.Suppliers.hasOne(database.Workers);
+  database.Workers.belongsTo(database.Suppliers);
+
+  //Services belongsTo suppliers
+  database.Suppliers.hasMany(database.Services);
+  database.Services.belongsTo(database.Suppliers);
+
+  database.Users.hasMany(database.Orders);
+  database.Orders.belongsTo(database.Users);
+
+  database.Services.hasOne(database.Orders);
+  database.Orders.belongsTo(database.Services);
+
+  database.Users.hasOne(database.Ratings);
+  database.Ratings.belongsTo(database.Users);
+
+  database.Workers.hasMany(database.Ratings);
+  database.Ratings.belongsTo(database.Workers);
+
+  await sequelize.sync({ alter: true });
 } catch (error) {
   console.log(error);
   console.log("Nepavyko prisijungti prie duomenų bazės");

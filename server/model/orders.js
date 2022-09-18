@@ -6,6 +6,11 @@ const Orders = (sequelize) => {
       type: DataTypes.DATE,
       allowNull: false,
     },
+    status: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: 0,
+    },
   };
 
   return sequelize.define("orders", Schema);
