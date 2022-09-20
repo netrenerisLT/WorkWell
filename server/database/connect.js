@@ -61,7 +61,7 @@ try {
   database.Workers.hasMany(database.Ratings);
   database.Ratings.belongsTo(database.Workers);
 
-  await sequelize.sync({ alter: true });
+  await sequelize.sync({ alter: false });
 } catch (error) {
   console.log(error);
   console.log("Nepavyko prisijungti prie duomenų bazės");

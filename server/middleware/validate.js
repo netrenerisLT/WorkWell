@@ -44,6 +44,9 @@ const validate = (schema, req, res, next) => {
       case "status":
         message = "The status is incorrect.";
         break;
+      case "address":
+        message = "The address is incorrect.";
+        break;
       default:
         message = "Fields filled in incorrectly";
         break;
@@ -99,8 +102,8 @@ export const servicesValidator = (req, res, next) => {
 
 export const suppliersValidator = (req, res, next) => {
   const schema = Joi.object({
-    adress: Joi.string().min(2).required(),
     name: Joi.string().min(2).required(),
+    address: Joi.string().min(2).required(),
     phone_number: Joi.string().required(),
     email: Joi.string().email().required(),
   });
