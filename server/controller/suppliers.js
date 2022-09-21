@@ -15,6 +15,18 @@ Router.get("/", async (req, res) => {
   }
 });
 
+Router.get("/single/:id", async (req, res) => {
+  try {
+    const supplier = await db.Suppliers.findByPk(req.params.id);
+    res.json(supplier);
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .send("There was a problem with creating the service. Please try again.");
+  }
+});
+
 Router.post("/new", suppliersValidator, async (req, res) => {
   try {
     await db.Suppliers.create(req.body);

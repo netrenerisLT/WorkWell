@@ -7,13 +7,31 @@ const Router = express.Router();
 
 Router.get("/", async (req, res) => {
   try {
-    const workers = await db.Workers.findAll();
+    const workers = await db.Workers.findAll({
+      //we fetch additional suppliers name data
+      include: {
+        model: db.Suppliers,
+        attributes: ["name"],
+      },
+    });
     res.send(workers);
   } catch (error) {
     console.log(error);
     res
       .status(500)
       .send("There was a problem with showing the list of worker.");
+  }
+});
+
+Router.get("/single/:id", async (req, res) => {
+  try {
+    const worker = await db.Workers.findByPk(req.params.id);
+    res.json(worker);
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .send("There was a problem with creating the service. Please try again.");
   }
 });
 

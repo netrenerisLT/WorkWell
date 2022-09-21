@@ -24,7 +24,7 @@ const validate = (schema, req, res, next) => {
         message = "The password is incorrect.";
         break;
       case "supplierId":
-        message = "The supplierId is incorrect.";
+        message = "The supplier is incorrect.";
         break;
       case "price":
         message = "The price is incorrect.";
@@ -92,7 +92,7 @@ export const workersValidator = (req, res, next) => {
 export const servicesValidator = (req, res, next) => {
   const schema = Joi.object({
     name: Joi.string().min(2).required(),
-    duration: Joi.string().min(2).required(),
+    duration: Joi.string().min(1).required(),
     price: Joi.number().required(),
     supplierId: Joi.number().integer().required(),
   });

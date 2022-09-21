@@ -6,13 +6,31 @@ const Router = express.Router();
 
 Router.get("/", async (req, res) => {
   try {
-    const services = await db.Services.findAll();
+    const services = await db.Services.findAll({
+      //we fetch additional suppliers name data
+      include: {
+        model: db.Suppliers,
+        attributes: ["name"],
+      },
+    });
     res.send(services);
   } catch (error) {
     console.log(error);
     res
       .status(500)
       .send("There was a problem with showing the list of services.");
+  }
+});
+
+Router.get("/single/:id", async (req, res) => {
+  try {
+    const service = await db.Services.findByPk(req.params.id);
+    res.json(service);
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .send("There was a problem with creating the service. Please try again.");
   }
 });
 

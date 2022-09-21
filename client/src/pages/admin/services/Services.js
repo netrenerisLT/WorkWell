@@ -2,17 +2,16 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
 import MainContext from "../../../context/MainContext.js";
 
-const Suppliers = () => {
-  const [suppliers, setSuppliers] = useState([]);
+const Services = () => {
+  const [services, setServices] = useState([]);
   const { setAlert } = useContext(MainContext);
   const navigate = useNavigate();
 
   const handleDelete = (id) => {
     axios
-      .delete("/api/suppliers/delete/" + id)
+      .delete("/api/services/delete/" + id)
       .then((resp) => {
         setAlert({
           message: resp.data,
@@ -32,8 +31,8 @@ const Suppliers = () => {
 
   useEffect(() => {
     axios
-      .get("/api/suppliers/")
-      .then((resp) => setSuppliers(resp.data))
+      .get("/api/services/")
+      .then((resp) => setServices(resp.data))
       .catch((error) => {
         console.log(error);
         setAlert({
@@ -46,43 +45,45 @@ const Suppliers = () => {
   return (
     <>
       <div className="d-flex flex-wrap align-items-center justify-content-between justify-content-lg">
-        <h1>Suppliers</h1>
-        <Link to="/suppliers/new">
+        <h1>Services</h1>
+        <Link to="new">
           <button type="button" className="btn btn-warning me-2">
-            Add new supplier
+            Add new service
           </button>
         </Link>
       </div>
-      {suppliers.length !== 0 ? (
+      {services.length !== 0 ? (
         <table className="table table-striped table-hover">
           <thead>
             <tr>
               <th>#</th>
               <th>Name</th>
-              <th>Address</th>
-              <th>Email</th>
-              <th>Phone Number</th>
+              <th>Duration</th>
+              <th>Price</th>
+              <th>Supplier</th>
             </tr>
           </thead>
           <tbody>
-            {suppliers.map((supplier) => (
-              <tr key={supplier.id}>
-                <td>{supplier.id}</td>
-                <td>{supplier.name}</td>
-                <td>{supplier.address}</td>
-                <td>{supplier.email}</td>
-                <td>{supplier.phone_number}</td>
+            {services.map((service) => (
+              <tr key={service.id}>
+                <td>{service.id}</td>
+                <td>{service.name}</td>
+                <td>{service.duration}</td>
+                <td>
+                  {service.price} <span className="eur">€</span>
+                </td>
+                <td>{service.supplier.name}</td>
                 <td>
                   <div className="d-flex justify-content-end gap-2">
                     <Link
-                      to={"/suppliers/edit/" + supplier.id}
+                      to={"/services/edit/" + service.id}
                       className="btn btn-secondary"
                     >
                       Edit
                     </Link>
                     <button
                       className="btn btn-warning"
-                      onClick={() => handleDelete(supplier.id)}
+                      onClick={() => handleDelete(service.id)}
                     >
                       Delete
                     </button>
@@ -93,10 +94,10 @@ const Suppliers = () => {
           </tbody>
         </table>
       ) : (
-        <h3>Suppliers doesn't exist yet.</h3>
+        <h3>Services doesn't exist.</h3>
       )}
     </>
   );
 };
 
-export default Suppliers;
+export default Services;

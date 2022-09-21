@@ -1,17 +1,19 @@
-import { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useContext, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import MainContext from "../../../context/MainContext.js";
 
-const AddSuppliers = () => {
+const EditSuppliers = () => {
   const { setAlert } = useContext(MainContext);
   const navigate = useNavigate();
+  const { id } = useParams();
   const [form, setForm] = useState({
     name: "",
     address: "",
     phone_number: "",
     email: "",
   });
+
   const handleForm = (e) => {
     setForm({
       ...form,
@@ -23,7 +25,7 @@ const AddSuppliers = () => {
     e.preventDefault();
 
     axios
-      .post("/api/suppliers/new", form)
+      .put("/api/suppliers/edit/" + id, form)
       .then((resp) => {
         setAlert({
           message: resp.data,
@@ -42,9 +44,22 @@ const AddSuppliers = () => {
           setTimeout(() => navigate("/login"), 2000);
       });
   };
+
+  useEffect(() => {
+    axios
+      .get("/api/suppliers/single/" + id)
+      .then((resp) => setForm(resp.data))
+      .catch((error) => {
+        setAlert({
+          message: error.response.data,
+          status: "danger",
+        });
+      });
+  }, [id, setAlert]);
+
   return (
     <>
-      <h1>Add new supplier</h1>
+      <h1>Edit service</h1>
       <form onSubmit={(e) => handleSubmit(e)}>
         <div className="form-group mb-2">
           <label className="mb-1">Name:</label>
@@ -53,6 +68,7 @@ const AddSuppliers = () => {
             name="name"
             className="form-control"
             onChange={handleForm}
+            value={form.name}
           />
         </div>
         <div className="form-group mb-2">
@@ -62,6 +78,7 @@ const AddSuppliers = () => {
             name="address"
             className="form-control"
             onChange={handleForm}
+            value={form.address}
           ></input>
         </div>
         <div className="form-group mb-3">
@@ -71,6 +88,7 @@ const AddSuppliers = () => {
             name="phone_number"
             className="form-control"
             onChange={handleForm}
+            value={form.phone_number}
           />
         </div>
         <div className="form-group mb-3">
@@ -80,12 +98,13 @@ const AddSuppliers = () => {
             name="email"
             className="form-control"
             onChange={handleForm}
+            value={form.email}
           />
         </div>
-        <button className="btn btn-primary">Add supplier</button>
+        <button className="btn btn-primary">Edit supplier</button>
       </form>
     </>
   );
 };
 
-export default AddSuppliers;
+export default EditSuppliers;

@@ -19,22 +19,22 @@ const Header = () => {
               </Link>
             </li>
             <li>
-              <Link to="/admin" className="nav-link px-2 text-white">
-                Admin
-              </Link>
-            </li>
-            <li>
-              <Link to="/" className="nav-link px-2 text-white">
-                Services
-              </Link>
-            </li>
-            <li>
-              <Link to="/" className="nav-link px-2 text-white">
+              <Link to="/suppliers" className="nav-link px-2 text-white">
                 Suppliers
               </Link>
             </li>
             <li>
-              <Link to="/" className="nav-link px-2 text-white">
+              <Link to="/services" className="nav-link px-2 text-white">
+                Services
+              </Link>
+            </li>
+            <li>
+              <Link to="/workers" className="nav-link px-2 text-white">
+                Workers
+              </Link>
+            </li>
+            <li>
+              <Link to="/orders" className="nav-link px-2 text-white">
                 Orders
               </Link>
             </li>

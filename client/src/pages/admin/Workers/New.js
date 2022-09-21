@@ -1,16 +1,15 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import MainContext from "../../../context/MainContext.js";
 
-const AddSuppliers = () => {
+const AddWorkers = () => {
   const { setAlert } = useContext(MainContext);
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    name: "",
-    address: "",
-    phone_number: "",
-    email: "",
+    first_name: "",
+    last_name: "",
+    photo: "",
   });
   const handleForm = (e) => {
     setForm({
@@ -19,18 +18,20 @@ const AddSuppliers = () => {
     });
   };
 
+  const [suppliers, setSuppliers] = useState([]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
     axios
-      .post("/api/suppliers/new", form)
+      .post("/api/workers/new", form)
       .then((resp) => {
         setAlert({
           message: resp.data,
           status: "success",
         });
 
-        navigate("/suppliers");
+        navigate("/workers");
       })
       .catch((error) => {
         setAlert({
@@ -42,45 +43,66 @@ const AddSuppliers = () => {
           setTimeout(() => navigate("/login"), 2000);
       });
   };
+
+  useEffect(() => {
+    axios
+      .get("/api/suppliers/")
+      .then((resp) => setSuppliers(resp.data))
+      .catch((error) => {
+        console.log(error);
+        setAlert({
+          message: error.response.data,
+          status: "danger",
+        });
+      });
+  }, [setAlert]);
+
   return (
     <>
-      <h1>Add new supplier</h1>
+      <h1>Add new worker</h1>
       <form onSubmit={(e) => handleSubmit(e)}>
         <div className="form-group mb-2">
-          <label className="mb-1">Name:</label>
+          <label className="mb-1">First Name:</label>
           <input
             type="text"
-            name="name"
+            name="first_name"
             className="form-control"
             onChange={handleForm}
           />
         </div>
         <div className="form-group mb-2">
-          <label className="mb-1">Adress:</label>
+          <label className="mb-1">Last Name:</label>
           <input
             type="text"
-            name="address"
+            name="last_namee"
             className="form-control"
             onChange={handleForm}
           ></input>
         </div>
         <div className="form-group mb-3">
-          <label className="mb-1">Phone number:</label>
+          <label className="mb-1">Profile image:</label>
           <input
-            type="text"
-            name="phone_number"
+            type="file"
+            name="photo"
             className="form-control"
             onChange={handleForm}
           />
         </div>
         <div className="form-group mb-3">
-          <label className="mb-1">Email address:</label>
-          <input
-            type="text"
-            name="email"
-            className="form-control"
+          <label className="mb-1">Supplier:</label>
+          <select
+            name="supplierId"
             onChange={handleForm}
-          />
+            className="form-control"
+            required
+          >
+            <option>Choose supplier</option>
+            {suppliers.map((supplier) => (
+              <option key={supplier.id} value={supplier.id}>
+                {supplier.name}
+              </option>
+            ))}
+          </select>
         </div>
         <button className="btn btn-primary">Add supplier</button>
       </form>
@@ -88,4 +110,4 @@ const AddSuppliers = () => {
   );
 };
 
-export default AddSuppliers;
+export default AddWorkers;
