@@ -49,11 +49,6 @@ const Orders = () => {
     <>
       <div className="d-flex flex-wrap align-items-center justify-content-between justify-content-lg mt-4">
         <h1>Orders</h1>
-        <Link to="/orders/new">
-          <button type="button" className="btn btn-warning me-2">
-            Add new order
-          </button>
-        </Link>
       </div>
       {orders.length !== 0 ? (
         <table className="table table-striped table-hover align-middle">
@@ -78,7 +73,7 @@ const Orders = () => {
                 <td>
                   <div className="d-flex justify-content-end gap-2">
                     <Link
-                      to={"/orders/edit/" + order.id}
+                      to={"/admin/orders/edit/" + order.id}
                       className="btn btn-secondary"
                     >
                       Edit

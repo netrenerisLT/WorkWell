@@ -38,7 +38,7 @@ const EditWorkers = () => {
           status: "success",
         });
 
-        navigate("/workers");
+        navigate("/admin/workers");
       })
       .catch((error) => {
         setAlert({

@@ -4,8 +4,11 @@ import { suppliersValidator } from "../middleware/validate.js";
 
 const Router = express.Router();
 Router.get("/", async (req, res) => {
+  const options = {};
+  if (req.query.sort === "1") options.order = [["name", "ASC"]];
+  if (req.query.sort === "2") options.order = [["name", "DESC"]];
   try {
-    const suppliers = await db.Suppliers.findAll();
+    const suppliers = await db.Suppliers.findAll(options);
     res.send(suppliers);
   } catch (error) {
     console.log(error);

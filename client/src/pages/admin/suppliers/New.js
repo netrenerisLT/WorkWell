@@ -30,7 +30,7 @@ const AddSuppliers = () => {
           status: "success",
         });
 
-        navigate("/suppliers");
+        navigate("/admin/suppliers");
       })
       .catch((error) => {
         setAlert({

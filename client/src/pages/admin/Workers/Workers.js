@@ -45,11 +45,13 @@ const Workers = () => {
       });
   }, [refresh, setAlert]);
 
+  console.log(workers);
+
   return (
     <>
       <div className="d-flex flex-wrap align-items-center justify-content-between justify-content-lg mt-4">
         <h1>Workers</h1>
-        <Link to="/workers/new">
+        <Link to="/admin/workers/new">
           <button type="button" className="btn btn-warning me-2">
             Add new worker
           </button>
@@ -89,7 +91,7 @@ const Workers = () => {
                 <td>
                   <div className="d-flex justify-content-end gap-2">
                     <Link
-                      to={"/workers/edit/" + worker.id}
+                      to={"/admin/workers/edit/" + worker.id}
                       className="btn btn-secondary"
                     >
                       Edit

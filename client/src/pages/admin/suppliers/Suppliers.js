@@ -50,7 +50,7 @@ const Suppliers = () => {
     <>
       <div className="d-flex flex-wrap align-items-center justify-content-between justify-content-lg mt-4">
         <h1>Suppliers</h1>
-        <Link to="/suppliers/new">
+        <Link to="/admin/suppliers/new">
           <button type="button" className="btn btn-warning me-2">
             Add new supplier
           </button>
@@ -76,7 +76,7 @@ const Suppliers = () => {
                 <td>
                   <div className="d-flex justify-content-end gap-2">
                     <Link
-                      to={"/suppliers/edit/" + supplier.id}
+                      to={"/admin/suppliers/edit/" + supplier.id}
                       className="btn btn-secondary"
                     >
                       Edit

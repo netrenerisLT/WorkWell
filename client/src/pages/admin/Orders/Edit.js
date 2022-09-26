@@ -33,7 +33,7 @@ const EditOrders = () => {
           status: "success",
         });
 
-        navigate("/orders");
+        navigate("/admin/orders");
       })
       .catch((error) => {
         setAlert({

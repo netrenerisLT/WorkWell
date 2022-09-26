@@ -32,7 +32,7 @@ const AddServices = () => {
           status: "success",
         });
 
-        navigate("/services");
+        navigate("/admin/services");
       })
       .catch((error) => {
         setAlert({

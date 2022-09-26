@@ -32,7 +32,7 @@ const EditSuppliers = () => {
           status: "success",
         });
 
-        navigate("/suppliers");
+        navigate("/admin/suppliers");
       })
       .catch((error) => {
         setAlert({
