@@ -7,6 +7,8 @@ import MainContext from "../../../context/MainContext.js";
 
 const Suppliers = () => {
   const [suppliers, setSuppliers] = useState([]);
+  const [refresh, setRefresh] = useState(false);
+
   const { setAlert } = useContext(MainContext);
   const navigate = useNavigate();
 
@@ -18,6 +20,7 @@ const Suppliers = () => {
           message: resp.data,
           status: "success",
         });
+        setRefresh(!refresh);
       })
       .catch((error) => {
         setAlert({
@@ -41,11 +44,11 @@ const Suppliers = () => {
           status: "danger",
         });
       });
-  }, [setAlert]);
+  }, [refresh, setAlert]);
 
   return (
     <>
-      <div className="d-flex flex-wrap align-items-center justify-content-between justify-content-lg">
+      <div className="d-flex flex-wrap align-items-center justify-content-between justify-content-lg mt-4">
         <h1>Suppliers</h1>
         <Link to="/suppliers/new">
           <button type="button" className="btn btn-warning me-2">
@@ -57,7 +60,6 @@ const Suppliers = () => {
         <table className="table table-striped table-hover">
           <thead>
             <tr>
-              <th>#</th>
               <th>Name</th>
               <th>Address</th>
               <th>Email</th>
@@ -67,7 +69,6 @@ const Suppliers = () => {
           <tbody>
             {suppliers.map((supplier) => (
               <tr key={supplier.id}>
-                <td>{supplier.id}</td>
                 <td>{supplier.name}</td>
                 <td>{supplier.address}</td>
                 <td>{supplier.email}</td>

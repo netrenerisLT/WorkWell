@@ -17,7 +17,9 @@ Router.get("/", async (req, res) => {
 
 Router.get("/single/:id", async (req, res) => {
   try {
-    const supplier = await db.Suppliers.findByPk(req.params.id);
+    const supplier = await db.Suppliers.findByPk(req.params.id, {
+      attributes: ["name", "address", "phone_number", "email"],
+    });
     res.json(supplier);
   } catch (error) {
     console.log(error);

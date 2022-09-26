@@ -84,6 +84,7 @@ export const workersValidator = (req, res, next) => {
     first_name: Joi.string().min(2).required(),
     last_name: Joi.string().min(2).required(),
     supplierId: Joi.number().integer().required(),
+    photo: Joi.string().allow(""),
   });
 
   validate(schema, req, res, next);
@@ -115,7 +116,6 @@ export const ordersValidator = (req, res, next) => {
   const schema = Joi.object({
     order_date: Joi.date().required(),
     status: Joi.number().integer(),
-    serviceId: Joi.number().integer().required(),
   });
 
   validate(schema, req, res, next);

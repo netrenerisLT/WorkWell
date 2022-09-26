@@ -11,20 +11,27 @@ const AddWorkers = () => {
     last_name: "",
     photo: "",
   });
+
+  const [suppliers, setSuppliers] = useState([]);
   const handleForm = (e) => {
     setForm({
       ...form,
-      [e.target.name]: e.target.value,
+      [e.target.name]:
+        e.target.name === "photo" ? e.target.files[0] : e.target.value,
     });
   };
-
-  const [suppliers, setSuppliers] = useState([]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    const formData = new FormData();
+
+    for (const key in form) {
+      formData.append(key, form[key]);
+    }
+
     axios
-      .post("/api/workers/new", form)
+      .post("/api/workers/new", formData)
       .then((resp) => {
         setAlert({
           message: resp.data,
@@ -66,17 +73,17 @@ const AddWorkers = () => {
           <input
             type="text"
             name="first_name"
-            className="form-control"
             onChange={handleForm}
+            className="form-control"
           />
         </div>
         <div className="form-group mb-2">
           <label className="mb-1">Last Name:</label>
           <input
             type="text"
-            name="last_namee"
-            className="form-control"
+            name="last_name"
             onChange={handleForm}
+            className="form-control"
           ></input>
         </div>
         <div className="form-group mb-3">
@@ -84,8 +91,8 @@ const AddWorkers = () => {
           <input
             type="file"
             name="photo"
-            className="form-control"
             onChange={handleForm}
+            className="form-control"
           />
         </div>
         <div className="form-group mb-3">

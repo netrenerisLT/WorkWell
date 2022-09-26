@@ -13,3 +13,27 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+ul.nav li {
+  position: relative;
+}
+ul.nav li:hover > ul {
+  max-height: 500px;
+  padding: 0.7rem 1rem 0.5rem 2.5rem;
+}
+
+ul.nav li > ul {
+  position: absolute;
+  left: 0;
+  width: 200px;
+  background-color: #212529;
+  list-style: none;
+  overflow: hidden;
+  max-height: 0;
+  transition: all 0.3s ease-in-out;
+}
+ul.nav li > ul > li > a::after {
+  display: none;
+}
+ul.nav li > ul > li > a:hover {
+  text-decoration: underline;
+}

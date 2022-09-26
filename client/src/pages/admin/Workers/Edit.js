@@ -17,15 +17,21 @@ const EditWorkers = () => {
   const handleForm = (e) => {
     setForm({
       ...form,
-      [e.target.name]: e.target.value,
+      [e.target.name]:
+        e.target.name === "photo" ? e.target.files[0] : e.target.value,
     });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    const formData = new FormData();
+    for (const key in form) {
+      formData.append(key, form[key]);
+    }
+
     axios
-      .put("/api/workers/edit/" + id, form)
+      .put("/api/workers/edit/" + id, formData)
       .then((resp) => {
         setAlert({
           message: resp.data,
@@ -72,7 +78,7 @@ const EditWorkers = () => {
 
   return (
     <>
-      <h1>Add new worker</h1>
+      <h1>Edit worker</h1>
       <form onSubmit={(e) => handleSubmit(e)}>
         <div className="form-group mb-2">
           <label className="mb-1">First Name:</label>
@@ -88,7 +94,7 @@ const EditWorkers = () => {
           <label className="mb-1">Last Name:</label>
           <input
             type="text"
-            name="last_namee"
+            name="last_name"
             className="form-control"
             onChange={handleForm}
             value={form.last_name}
@@ -103,6 +109,21 @@ const EditWorkers = () => {
             onChange={handleForm}
           />
         </div>
+        {form.photo && typeof form.photo === "string" && (
+          <div className=" mb-3">
+            <img src={form.photo} alt="" style={{ maxWidth: 200 }} />
+            <div>
+              <button
+                className="btn btn-danger mt-2"
+                onClick={(e) => {
+                  setForm({ ...form, photo: "" });
+                }}
+              >
+                Delete Image
+              </button>
+            </div>
+          </div>
+        )}
         <div className="form-group mb-3">
           <label className="mb-1">Supplier:</label>
           <select
@@ -120,7 +141,7 @@ const EditWorkers = () => {
             ))}
           </select>
         </div>
-        <button className="btn btn-primary">Add worker</button>
+        <button className="btn btn-primary">Save changes</button>
       </form>
     </>
   );

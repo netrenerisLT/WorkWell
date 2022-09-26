@@ -7,7 +7,17 @@ const Router = express.Router();
 //Only admin can access
 Router.get("/", async (req, res) => {
   try {
-    const orders = await db.Orders.findAll();
+    const orders = await db.Orders.findAll({
+      include: [
+        { model: db.Users, attributes: ["first_name", "last_name"] },
+        {
+          model: db.Services,
+          attributes: {
+            exclude: ["duration", "price", "id", "createdAt", "updatedAt"],
+          },
+        },
+      ],
+    });
     res.send(orders);
   } catch (error) {
     console.log(error);
@@ -30,6 +40,20 @@ Router.get("/user/", async (req, res) => {
     res
       .status(500)
       .send("There was a problem with showing the list of orders.");
+  }
+});
+
+Router.get("/single/:id", async (req, res) => {
+  try {
+    const service = await db.Orders.findByPk(req.params.id, {
+      attributes: ["order_date", "status"],
+    });
+    res.json(service);
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .send("There was a problem with creating the service. Please try again.");
   }
 });
 

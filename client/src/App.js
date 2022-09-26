@@ -2,18 +2,19 @@ import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from "./components/Header/Header.js";
 import MainContext from "./context/MainContext.js";
-import Suppliers from "./pages/admin/suppliers/Suppliers.js";
-import AddSuppliers from "./pages/admin/suppliers/New.js";
-import EditSuppliers from "./pages/admin/suppliers/Edit.js";
-import Services from "./pages/admin/services/Services.js";
-import AddServices from "./pages/admin/services/New.js";
-import EditServices from "./pages/admin/services/Edit.js";
+import Orders from "./pages/admin/Orders/Orders.js";
+import AddOrders from "./pages/admin/Orders/New.js";
+import EditOrders from "./pages/admin/Orders/Edit.js";
+import Suppliers from "./pages/admin/Suppliers/Suppliers.js";
+import AddSuppliers from "./pages/admin/Suppliers/New.js";
+import EditSuppliers from "./pages/admin/Suppliers/Edit.js";
+import Services from "./pages/admin/Services/Services.js";
+import AddServices from "./pages/admin/Services/New.js";
+import EditServices from "./pages/admin/Services/Edit.js";
 import Workers from "./pages/admin/Workers/Workers.js";
 import AddWorkers from "./pages/admin/Workers/New.js";
 import EditWorkers from "./pages/admin/Workers/Edit.js";
 import Alert from "./components/Alert/Alert.js";
-
-import "./App.css";
 
 const App = () => {
   const [alert, setAlert] = useState({
@@ -33,6 +34,11 @@ const App = () => {
         <div className="container">
           <Alert />
           <Routes>
+            <Route path="orders">
+              <Route index element={<Orders />} />
+              <Route path="new" element={<AddOrders />} />
+              <Route path="edit/:id" element={<EditOrders />} />
+            </Route>
             <Route path="suppliers">
               <Route index element={<Suppliers />} />
               <Route path="new" element={<AddSuppliers />} />

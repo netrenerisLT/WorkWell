@@ -24,7 +24,9 @@ Router.get("/", async (req, res) => {
 
 Router.get("/single/:id", async (req, res) => {
   try {
-    const service = await db.Services.findByPk(req.params.id);
+    const service = await db.Services.findByPk(req.params.id, {
+      attributes: ["name", "duration", "price", "supplierId"],
+    });
     res.json(service);
   } catch (error) {
     console.log(error);

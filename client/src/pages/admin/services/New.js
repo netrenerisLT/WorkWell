@@ -6,13 +6,13 @@ import MainContext from "../../../context/MainContext.js";
 const AddServices = () => {
   const { setAlert } = useContext(MainContext);
   const navigate = useNavigate();
+  const [suppliers, setSuppliers] = useState([]);
+
   const [form, setForm] = useState({
     name: "",
     duration: "",
     price: "",
   });
-
-  const [suppliers, setSuppliers] = useState([]);
 
   const handleForm = (e) => {
     setForm({

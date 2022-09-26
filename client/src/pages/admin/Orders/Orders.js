@@ -5,15 +5,15 @@ import { useNavigate } from "react-router-dom";
 
 import MainContext from "../../../context/MainContext.js";
 
-const Workers = () => {
-  const [workers, setWorkers] = useState([]);
+const Orders = () => {
+  const [orders, setOrders] = useState([]);
   const [refresh, setRefresh] = useState(false);
   const { setAlert } = useContext(MainContext);
   const navigate = useNavigate();
 
   const handleDelete = (id) => {
     axios
-      .delete("/api/workers/delete/" + id)
+      .delete("/api/orders/delete/" + id)
       .then((resp) => {
         setAlert({
           message: resp.data,
@@ -34,8 +34,8 @@ const Workers = () => {
 
   useEffect(() => {
     axios
-      .get("/api/workers/")
-      .then((resp) => setWorkers(resp.data))
+      .get("/api/orders/")
+      .then((resp) => setOrders(resp.data))
       .catch((error) => {
         console.log(error);
         setAlert({
@@ -48,55 +48,44 @@ const Workers = () => {
   return (
     <>
       <div className="d-flex flex-wrap align-items-center justify-content-between justify-content-lg mt-4">
-        <h1>Workers</h1>
-        <Link to="/workers/new">
+        <h1>Orders</h1>
+        <Link to="/orders/new">
           <button type="button" className="btn btn-warning me-2">
-            Add new worker
+            Add new order
           </button>
         </Link>
       </div>
-      {workers.length !== 0 ? (
+      {orders.length !== 0 ? (
         <table className="table table-striped table-hover align-middle">
           <thead>
             <tr>
-              <th>Photo</th>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Supplier</th>
+              <th>Service</th>
+              <th>Order date</th>
+              <th>User</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
-            {workers.map((worker) => (
-              <tr key={worker.id}>
+            {orders.map((order) => (
+              <tr key={order.id}>
+                <td>{order.service?.name}</td>
+                <td>{new Date(order.order_date).toLocaleString("lt-LT")}</td>
                 <td>
-                  {worker.photo ? (
-                    <img
-                      src={worker.photo}
-                      alt={worker.first_name + " " + worker.last_name}
-                      style={{ maxWidth: "100px" }}
-                    />
-                  ) : (
-                    <img
-                      src="https://t3.ftcdn.net/jpg/00/64/67/80/360_F_64678017_zUpiZFjj04cnLri7oADnyMH0XBYyQghG.jpg"
-                      alt="Default profile"
-                      style={{ maxWidth: "100px" }}
-                    />
-                  )}
+                  {order.user &&
+                    order.user.first_name + " " + order.user.last_name}
                 </td>
-                <td>{worker.first_name}</td>
-                <td>{worker.last_name}</td>
-                <td>{worker.supplier?.name}</td>
+                <td>{order.status ? "Accepted" : "Declined"}</td>
                 <td>
                   <div className="d-flex justify-content-end gap-2">
                     <Link
-                      to={"/workers/edit/" + worker.id}
+                      to={"/orders/edit/" + order.id}
                       className="btn btn-secondary"
                     >
                       Edit
                     </Link>
                     <button
                       className="btn btn-warning"
-                      onClick={() => handleDelete(worker.id)}
+                      onClick={() => handleDelete(order.id)}
                     >
                       Delete
                     </button>
@@ -107,10 +96,10 @@ const Workers = () => {
           </tbody>
         </table>
       ) : (
-        <h3>Workers doesn't exist yet.</h3>
+        <h3>Orders doesn't exist yet.</h3>
       )}
     </>
   );
 };
 
-export default Workers;
+export default Orders;

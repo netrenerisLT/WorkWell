@@ -1,40 +1,44 @@
 import { useState, useContext, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import MainContext from "../../../context/MainContext.js";
 
-const EditServices = () => {
+const AddOrders = () => {
   const { setAlert } = useContext(MainContext);
   const navigate = useNavigate();
-  const { id } = useParams();
   const [form, setForm] = useState({
-    name: "",
-    duration: "",
-    price: "",
-    supplierId: "",
+    first_name: "",
+    last_name: "",
+    photo: "",
   });
 
   const [suppliers, setSuppliers] = useState([]);
-
   const handleForm = (e) => {
     setForm({
       ...form,
-      [e.target.name]: e.target.value,
+      [e.target.name]:
+        e.target.name === "photo" ? e.target.files[0] : e.target.value,
     });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    const formData = new FormData();
+
+    for (const key in form) {
+      formData.append(key, form[key]);
+    }
+
     axios
-      .put("/api/services/edit/" + id, form)
+      .post("/api/workers/new", formData)
       .then((resp) => {
         setAlert({
           message: resp.data,
           status: "success",
         });
 
-        navigate("/services");
+        navigate("/workers");
       })
       .catch((error) => {
         setAlert({
@@ -46,18 +50,6 @@ const EditServices = () => {
           setTimeout(() => navigate("/login"), 2000);
       });
   };
-
-  useEffect(() => {
-    axios
-      .get("/api/services/single/" + id)
-      .then((resp) => setForm(resp.data))
-      .catch((error) => {
-        setAlert({
-          message: error.response.data,
-          status: "danger",
-        });
-      });
-  }, [id, setAlert]);
 
   useEffect(() => {
     axios
@@ -74,37 +66,33 @@ const EditServices = () => {
 
   return (
     <>
-      <h1>Edit service</h1>
+      <h1>Add new worker</h1>
       <form onSubmit={(e) => handleSubmit(e)}>
         <div className="form-group mb-2">
-          <label className="mb-1">Name:</label>
+          <label className="mb-1">First Name:</label>
           <input
             type="text"
-            name="name"
-            className="form-control"
+            name="first_name"
             onChange={handleForm}
-            value={form.name}
+            className="form-control"
           />
         </div>
         <div className="form-group mb-2">
-          <label className="mb-1">Duration:</label>
+          <label className="mb-1">Last Name:</label>
           <input
             type="text"
-            name="duration"
-            className="form-control"
+            name="last_name"
             onChange={handleForm}
-            value={form.duration}
+            className="form-control"
           ></input>
         </div>
         <div className="form-group mb-3">
-          <label className="mb-1">Price:</label>
+          <label className="mb-1">Profile image:</label>
           <input
-            type="number"
-            step="any"
-            name="price"
-            className="form-control"
+            type="file"
+            name="photo"
             onChange={handleForm}
-            value={form.price}
+            className="form-control"
           />
         </div>
         <div className="form-group mb-3">
@@ -113,7 +101,6 @@ const EditServices = () => {
             name="supplierId"
             onChange={handleForm}
             className="form-control"
-            value={form.supplierId ? form.supplierId : ""}
             required
           >
             <option>Choose supplier</option>
@@ -124,10 +111,10 @@ const EditServices = () => {
             ))}
           </select>
         </div>
-        <button className="btn btn-primary">Save changes</button>
+        <button className="btn btn-primary">Add supplier</button>
       </form>
     </>
   );
 };
 
-export default EditServices;
+export default AddOrders;

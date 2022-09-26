@@ -25,7 +25,9 @@ Router.get("/", async (req, res) => {
 
 Router.get("/single/:id", async (req, res) => {
   try {
-    const worker = await db.Workers.findByPk(req.params.id);
+    const worker = await db.Workers.findByPk(req.params.id, {
+      attributes: ["first_name", "last_name", "photo", "supplierId"],
+    });
     res.json(worker);
   } catch (error) {
     console.log(error);
@@ -41,7 +43,7 @@ Router.post(
   workersValidator,
   async (req, res) => {
     try {
-      req.body.photo = req.file.path;
+      if (req.file) req.body.photo = req.file.path;
       await db.Workers.create(req.body);
       res.send("New worker added.");
     } catch (error) {

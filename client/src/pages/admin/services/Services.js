@@ -6,6 +6,8 @@ import MainContext from "../../../context/MainContext.js";
 
 const Services = () => {
   const [services, setServices] = useState([]);
+  const [refresh, setRefresh] = useState(false);
+
   const { setAlert } = useContext(MainContext);
   const navigate = useNavigate();
 
@@ -17,6 +19,7 @@ const Services = () => {
           message: resp.data,
           status: "success",
         });
+        setRefresh(!refresh);
       })
       .catch((error) => {
         setAlert({
@@ -40,11 +43,11 @@ const Services = () => {
           status: "danger",
         });
       });
-  }, [setAlert]);
+  }, [refresh, setAlert]);
 
   return (
     <>
-      <div className="d-flex flex-wrap align-items-center justify-content-between justify-content-lg">
+      <div className="d-flex flex-wrap align-items-center justify-content-between justify-content-lg mt-4">
         <h1>Services</h1>
         <Link to="new">
           <button type="button" className="btn btn-warning me-2">
@@ -56,7 +59,6 @@ const Services = () => {
         <table className="table table-striped table-hover">
           <thead>
             <tr>
-              <th>#</th>
               <th>Name</th>
               <th>Duration</th>
               <th>Price</th>
@@ -66,13 +68,12 @@ const Services = () => {
           <tbody>
             {services.map((service) => (
               <tr key={service.id}>
-                <td>{service.id}</td>
                 <td>{service.name}</td>
                 <td>{service.duration}</td>
                 <td>
                   {service.price} <span className="eur">€</span>
                 </td>
-                <td>{service.supplier.name}</td>
+                <td>{service.supplier?.name}</td>
                 <td>
                   <div className="d-flex justify-content-end gap-2">
                     <Link
