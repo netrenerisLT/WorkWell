@@ -50,7 +50,6 @@ const AddServices = () => {
       .get("/api/suppliers/")
       .then((resp) => setSuppliers(resp.data))
       .catch((error) => {
-        console.log(error);
         setAlert({
           message: error.response.data,
           status: "danger",

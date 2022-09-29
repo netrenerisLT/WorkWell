@@ -23,8 +23,6 @@ const EditOrders = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log(form);
-
     axios
       .put("/api/orders/edit/" + id, form)
       .then((resp) => {

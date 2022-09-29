@@ -1,9 +1,8 @@
-import axios from "axios";
-import { Link } from "react-router-dom";
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-import MainContext from "../../../context/MainContext.js";
+import MainContext from "../../context/MainContext.js";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -34,20 +33,21 @@ const Orders = () => {
 
   useEffect(() => {
     axios
-      .get("/api/orders/")
+      .get("/api/orders/user/")
       .then((resp) => setOrders(resp.data))
       .catch((error) => {
         setAlert({
           message: error.response.data,
           status: "danger",
         });
+        if (error.response.status === "401") navigate("/login");
       });
   }, [refresh, setAlert]);
 
   return (
     <>
       <div className="d-flex flex-wrap align-items-center justify-content-between justify-content-lg mt-4">
-        <h1>Orders</h1>
+        <h1>My orders</h1>
       </div>
       {orders.length !== 0 ? (
         <table className="table table-striped table-hover align-middle">
@@ -56,7 +56,9 @@ const Orders = () => {
               <th>Status</th>
               <th>Service</th>
               <th>Order date</th>
-              <th>User</th>
+              <th>Worker</th>
+              <th>Supplier</th>
+              <th>Rating</th>
             </tr>
           </thead>
           <tbody>
@@ -66,17 +68,23 @@ const Orders = () => {
                 <td>{order.service?.name}</td>
                 <td>{new Date(order.order_date).toLocaleString("lt-LT")}</td>
                 <td>
-                  {order.user &&
-                    order.user.first_name + " " + order.user.last_name}
+                  {order.worker?.first_name + " " + order.worker?.last_name}
+                </td>
+                <td>{order.service.supplier?.name}</td>
+                <td>
+                  <select className="form-control">
+                    <option value="" disabled>
+                      Add a review
+                    </option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                  </select>
                 </td>
                 <td>
                   <div className="d-flex justify-content-end gap-2">
-                    <Link
-                      to={"/admin/orders/edit/" + order.id}
-                      className="btn btn-secondary"
-                    >
-                      Edit
-                    </Link>
                     <button
                       className="btn btn-warning"
                       onClick={() => handleDelete(order.id)}

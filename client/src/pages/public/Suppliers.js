@@ -1,4 +1,5 @@
 import { useState, useContext, useEffect } from "react";
+import { Link } from "react-router-dom";
 import MainContext from "../../context/MainContext.js";
 import axios from "axios";
 
@@ -16,7 +17,6 @@ const Suppliers = () => {
       .get(url)
       .then((resp) => setSuppliers(resp.data))
       .catch((error) => {
-        console.log(error);
         setAlert({
           message: error.response.data,
           status: "danger",
@@ -42,26 +42,32 @@ const Suppliers = () => {
           </select>
         </div>
       </div>
-      <div class="row row-cols-1 row-cols-md-3 mb-3 text-center mt-5">
+      <div className="row row-cols-1 row-cols-md-3 mb-3 text-center mt-5">
         {suppliers &&
           suppliers.map((supplier) => (
-            <div class="col" key={supplier.id}>
-              <div class="card mb-4 rounded-3 shadow-sm">
-                <div class="card-header py-3">
-                  <h4 class="my-0 fw-normal">{supplier.name}</h4>
+            <div className="col" key={supplier.id}>
+              <div className="card mb-4 rounded-3 shadow-sm">
+                <div className="card-header py-3">
+                  <h4 className="my-0 fw-normal">{supplier.name}</h4>
                 </div>
-                <div class="card-body">
-                  <h4 class="card-title pricing-card-title">
+                <div className="card-body">
+                  <h4 className="card-title pricing-card-title">
                     {supplier.address}
                   </h4>
-                  <ul class="list-unstyled mt-3 mb-4">
+                  <ul className="list-unstyled mt-3 mb-4">
                     <li>{supplier.address}</li>
                     <li>{supplier.email}</li>
                     <li>{supplier.phone_number}</li>
                   </ul>
-                  <button type="button" class="w-100 btn btn-lg btn-warning">
+                </div>
+                <div>
+                  <Link
+                    type="button"
+                    to={"/new-order/" + supplier.id}
+                    className="w-100 btn btn-lg btn-warning"
+                  >
                     Order Services
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>

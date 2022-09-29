@@ -37,7 +37,6 @@ const Workers = () => {
       .get("/api/workers/")
       .then((resp) => setWorkers(resp.data))
       .catch((error) => {
-        console.log(error);
         setAlert({
           message: error.response.data,
           status: "danger",
@@ -45,7 +44,6 @@ const Workers = () => {
       });
   }, [refresh, setAlert]);
 
-  console.log(workers);
 
   return (
     <>

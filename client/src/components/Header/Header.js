@@ -57,6 +57,16 @@ const Header = () => {
                 Suppliers
               </Link>
             </li>
+            <li>
+              <Link to="/workers" className="nav-link px-2 text-white">
+                Workers
+              </Link>
+            </li>
+            <li>
+              <Link to="/orders" className="nav-link px-2 text-white">
+                Orders
+              </Link>
+            </li>
           </ul>
 
           <form

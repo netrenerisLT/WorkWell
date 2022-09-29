@@ -37,7 +37,6 @@ const Services = () => {
       .get("/api/services/")
       .then((resp) => setServices(resp.data))
       .catch((error) => {
-        console.log(error);
         setAlert({
           message: error.response.data,
           status: "danger",

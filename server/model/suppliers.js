@@ -2,11 +2,11 @@ import { DataTypes } from "sequelize";
 
 const Suppliers = (sequelize) => {
   const Schema = {
-    address: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    name: {
+    address: {
       type: DataTypes.STRING,
       allowNull: false,
     },

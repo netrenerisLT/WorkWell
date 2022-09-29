@@ -33,6 +33,20 @@ Router.get("/user/", async (req, res) => {
   try {
     const orders = await db.Orders.findAll({
       where: { userId: user_id },
+      include: [
+        {
+          model: db.Services,
+          attributes: ["name", "duration", "price"],
+          include: {
+            model: db.Suppliers,
+            attributes: ["name", "address", "phone_number", "email"],
+          },
+        },
+        {
+          model: db.Workers,
+          attributes: ["first_name", "last_name"],
+        },
+      ],
     });
     res.send(orders);
   } catch (error) {

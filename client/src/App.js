@@ -17,7 +17,10 @@ import EditWorkers from "./pages/admin/Workers/Edit.js";
 import Alert from "./components/Alert/Alert.js";
 
 /* ====================== users components ====================== */
-import PublicSuppliers from "./pages/users/Suppliers.js";
+import PublicSuppliers from "./pages/public/Suppliers.js";
+import PublicWorkers from "./pages/public/Workers.js";
+import NewOrder from "./pages/public/NewOrder.js";
+import PublicOrders from "./pages/public/Orders.js";
 
 const App = () => {
   const [alert, setAlert] = useState({
@@ -59,6 +62,9 @@ const App = () => {
               </Route>
             </Route>
             <Route path="suppliers" element={<PublicSuppliers />}></Route>
+            <Route path="workers" element={<PublicWorkers />}></Route>
+            <Route path="orders" element={<PublicOrders />}></Route>
+            <Route path="new-order/:supplierId" element={<NewOrder />}></Route>
           </Routes>
         </div>
       </MainContext.Provider>

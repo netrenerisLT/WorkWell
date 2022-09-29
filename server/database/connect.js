@@ -42,22 +42,25 @@ try {
   database.Ratings = Ratings(sequelize);
   database.Orders = Orders(sequelize);
 
+  //Workers database
   database.Suppliers.hasOne(database.Workers);
   database.Workers.belongsTo(database.Suppliers);
 
-  //Services belongsTo suppliers
+  //Services database
   database.Suppliers.hasMany(database.Services);
   database.Services.belongsTo(database.Suppliers);
 
+  //Orders database
   database.Users.hasMany(database.Orders);
   database.Orders.belongsTo(database.Users);
-
   database.Services.hasOne(database.Orders);
   database.Orders.belongsTo(database.Services);
+  database.Workers.hasMany(database.Orders);
+  database.Orders.belongsTo(database.Workers);
 
+  //Ratings database
   database.Users.hasOne(database.Ratings);
   database.Ratings.belongsTo(database.Users);
-
   database.Workers.hasMany(database.Ratings);
   database.Ratings.belongsTo(database.Workers);
 

@@ -1,4 +1,5 @@
 import express from "express";
+import Sequelize from "sequelize";
 import db from "../database/connect.js";
 import upload from "../middleware/multer.js";
 import { workersValidator } from "../middleware/validate.js";
@@ -6,14 +7,25 @@ import { workersValidator } from "../middleware/validate.js";
 const Router = express.Router();
 
 Router.get("/", async (req, res) => {
-  try {
-    const workers = await db.Workers.findAll({
-      //we fetch additional suppliers name data
-      include: {
+  const options = {
+    include: [
+      {
         model: db.Suppliers,
         attributes: ["name"],
       },
-    });
+      {
+        model: db.Ratings,
+        attributes: ["rating"],
+      },
+    ],
+  };
+
+  if (req.query.supplier)
+    options.where = {
+      supplierId: req.query.supplier,
+    };
+  try {
+    const workers = await db.Workers.findAll(options);
     res.send(workers);
   } catch (error) {
     console.log(error);
