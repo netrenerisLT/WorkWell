@@ -1,91 +1,86 @@
+import axios from "axios";
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import MainContext from "../../../context/MainContext.js";
+import MainContext from "../../context/MainContext.js";
 
-const AddSuppliers = () => {
+const Register = () => {
+  const [form, setForm] = useState({});
+
   const { setAlert } = useContext(MainContext);
+
   const navigate = useNavigate();
-  const [form, setForm] = useState({
-    name: "",
-    address: "",
-    phone_number: "",
-    email: "",
-  });
+
   const handleForm = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     axios
-      .post("/api/suppliers/new", form)
+      .post("/api/users/register/", form)
       .then((resp) => {
         setAlert({
           message: resp.data,
           status: "success",
         });
 
-        navigate("/admin/suppliers");
+        setTimeout(() => navigate("/sign-in"), 1000);
       })
       .catch((error) => {
         setAlert({
           message: error.response.data,
           status: "danger",
         });
-
-        if (error.response.status === 401)
-          setTimeout(() => navigate("/sign-in"), 2000);
       });
   };
+
   return (
     <>
-      <h1>Add new supplier</h1>
-      <form onSubmit={(e) => handleSubmit(e)}>
+      <div className="d-flex flex-wrap align-items-center justify-content-between justify-content-lg mt-4">
+        <h1>Registration</h1>
+      </div>
+      <form onSubmit={handleSubmit}>
         <div className="form-group mb-2">
           <label className="mb-1">Name:</label>
           <input
             type="text"
-            name="name"
+            name="first_name"
             className="form-control"
             onChange={handleForm}
           />
         </div>
         <div className="form-group mb-2">
-          <label className="mb-1">Adress:</label>
+          <label className="mb-1">Surname:</label>
           <input
             type="text"
-            name="address"
-            className="form-control"
-            onChange={handleForm}
-          ></input>
-        </div>
-        <div className="form-group mb-3">
-          <label className="mb-1">Phone number:</label>
-          <input
-            type="text"
-            name="phone_number"
+            name="last_name"
             className="form-control"
             onChange={handleForm}
           />
         </div>
-        <div className="form-group mb-3">
-          <label className="mb-1">Email address:</label>
+        <div className="form-group mb-2">
+          <label className="mb-1">Email:</label>
           <input
-            type="text"
+            type="email"
             name="email"
             className="form-control"
             onChange={handleForm}
           />
         </div>
-        <button className="btn btn-primary">Add supplier</button>
+        <div className="form-group mb-3">
+          <label className="mb-1">Password:</label>
+          <input
+            type="password"
+            name="password"
+            className="form-control"
+            onChange={handleForm}
+          />
+        </div>
+        <button className="btn btn-primary">Register</button>
       </form>
     </>
   );
 };
 
-export default AddSuppliers;
+export default Register;

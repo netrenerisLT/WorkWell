@@ -4,14 +4,14 @@ import MainContext from "../../context/MainContext.js";
 import axios from "axios";
 
 const Suppliers = () => {
-  const { setAlert } = useContext(MainContext);
+  const { setAlert, userInfo } = useContext(MainContext);
   const [suppliers, setSuppliers] = useState([]);
   const [sort, setSort] = useState("");
 
   useEffect(() => {
     let url = "/api/suppliers/";
 
-    if (sort === "1" || sort === "2" || sort === "3") url += "?sort=" + sort;
+    if (sort === "1" || sort === "2") url += "?sort=" + sort;
 
     axios
       .get(url)
@@ -38,7 +38,6 @@ const Suppliers = () => {
             <option>Newest</option>
             <option value="1">Name A-Z</option>
             <option value="2">Name Z-A</option>
-            <option value="3">Best Rated</option>
           </select>
         </div>
       </div>
@@ -63,10 +62,16 @@ const Suppliers = () => {
                 <div>
                   <Link
                     type="button"
-                    to={"/new-order/" + supplier.id}
+                    to={
+                      userInfo.role === 0 || userInfo.role === 1
+                        ? "/new-order/" + supplier.id
+                        : "/sign-in"
+                    }
                     className="w-100 btn btn-lg btn-warning"
                   >
-                    Order Services
+                    {userInfo.id
+                      ? "Order Services"
+                      : "Sign in to order services"}
                   </Link>
                 </div>
               </div>

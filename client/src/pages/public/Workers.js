@@ -7,26 +7,26 @@ const Workers = () => {
   const [suppliers, setSuppliers] = useState([]);
   const [workers, setWorkers] = useState([]);
   const [selectedSupplier, setSelectedSupplier] = useState("0");
+  const [selectedSorting, setSelectedSorting] = useState("0");
 
   const handleFilter = (e) => {
     setSelectedSupplier(e.target.value);
   };
+  const handleSorting = (e) => {
+    setSelectedSorting(e.target.value);
+  };
 
   useEffect(() => {
     let url = "/api/workers/";
-    if (selectedSupplier !== "0") url += "?supplier=" + selectedSupplier;
+    const searchParams = new URLSearchParams();
+    if (selectedSupplier !== "0")
+      searchParams.append("supplier", selectedSupplier);
+    if (selectedSorting !== "0") searchParams.append("sort", selectedSorting);
+    url += "?" + searchParams.toString();
     axios
       .get(url)
       .then((resp) => {
-        const workers = resp.data.map((worker) => {
-          if (worker.ratings.length > 0) {
-            let sum = 0;
-            worker.ratings.map((r) => (sum += r.rating));
-            worker.total_rating = (sum / worker.ratings.length).toFixed(2);
-          }
-          return worker;
-        });
-        setWorkers(workers);
+        setWorkers(resp.data);
       })
       .catch((error) => {
         setAlert({
@@ -34,7 +34,7 @@ const Workers = () => {
           status: "danger",
         });
       });
-  }, [selectedSupplier, setAlert]);
+  }, [selectedSupplier, selectedSorting, setAlert]);
 
   useEffect(() => {
     axios
@@ -52,18 +52,28 @@ const Workers = () => {
     <>
       <div className="d-flex flex-wrap align-items-center justify-content-between justify-content-lg mt-4">
         <h1>Workers</h1>
-        <div className="form-group">
-          <label className="mb-1">Sort by:</label>
-          {suppliers && (
-            <select className="form-control" onChange={handleFilter}>
-              <option value="0">All supplliers</option>
-              {suppliers.map((supplier) => (
-                <option value={supplier.id} key={supplier.id}>
-                  {supplier.name}
-                </option>
-              ))}
+        <div className="form-group d-flex gap-3">
+          <div className="form-group">
+            <label className="mb-1">Select supplier:</label>
+            {suppliers && (
+              <select className="form-control" onChange={handleFilter}>
+                <option value="0">All supplliers</option>
+                {suppliers.map((supplier) => (
+                  <option value={supplier.id} key={supplier.id}>
+                    {supplier.name}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
+          <div className="form-group">
+            <label className="mb-1">Sort by:</label>
+            <select className="form-control" onChange={handleSorting}>
+              <option value="0">Blyn</option>
+              <option value="1">Rating: high to low</option>
+              <option value="2">Rating: low to high</option>
             </select>
-          )}
+          </div>
         </div>
       </div>
       <div className="row row-cols-1 row-cols-md-3 mb-3 text-center mt-5">
@@ -94,7 +104,10 @@ const Workers = () => {
                         />
                       )}
                     </li>
-                    <li>{worker.total_rating}</li>
+                    <li>
+                      {worker.total_rating &&
+                        parseFloat(worker.total_rating).toFixed(2)}
+                    </li>
                   </ul>
                   <button
                     type="button"

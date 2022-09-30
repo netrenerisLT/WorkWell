@@ -27,8 +27,8 @@ const Orders = () => {
           status: "danger",
         });
 
-        if (error.response.status === 401)
-          setTimeout(() => navigate("/login"), 2000);
+        if (error.response.statcus === 401)
+          setTimeout(() => navigate("/sign-in"), 2000);
       });
   };
 

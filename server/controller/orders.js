@@ -1,11 +1,12 @@
 import express from "express";
 import db from "../database/connect.js";
 import { ordersValidator } from "../middleware/validate.js";
+import { auth, adminAuth } from "../middleware/auth.js";
 
 const Router = express.Router();
 
 //Only admin can access
-Router.get("/", async (req, res) => {
+Router.get("/", adminAuth, async (req, res) => {
   try {
     const orders = await db.Orders.findAll({
       include: [
@@ -28,8 +29,8 @@ Router.get("/", async (req, res) => {
 });
 
 //User can access
-Router.get("/user/", async (req, res) => {
-  const user_id = 1;
+Router.get("/user/", auth, async (req, res) => {
+  const user_id = req.session.user.id;
   try {
     const orders = await db.Orders.findAll({
       where: { userId: user_id },
@@ -46,7 +47,12 @@ Router.get("/user/", async (req, res) => {
           model: db.Workers,
           attributes: ["first_name", "last_name"],
         },
+        {
+          model: db.Ratings,
+          attributes: ["rating"],
+        },
       ],
+      group: ["id"],
     });
     res.send(orders);
   } catch (error) {
@@ -57,10 +63,10 @@ Router.get("/user/", async (req, res) => {
   }
 });
 
-Router.get("/single/:id", async (req, res) => {
+Router.get("/single/:id", adminAuth, async (req, res) => {
   try {
     const service = await db.Orders.findByPk(req.params.id, {
-      attributes: ["order_date", "status"],
+      attributes: ["order_date", "status", "serviceId", "workerId"],
     });
     res.json(service);
   } catch (error) {
@@ -71,8 +77,9 @@ Router.get("/single/:id", async (req, res) => {
   }
 });
 
-Router.post("/new", ordersValidator, async (req, res) => {
+Router.post("/new", auth, ordersValidator, async (req, res) => {
   try {
+    req.body.userId = req.session.user.id;
     await db.Orders.create(req.body);
     res.send("New order added.");
   } catch (error) {
@@ -83,7 +90,7 @@ Router.post("/new", ordersValidator, async (req, res) => {
   }
 });
 
-Router.put("/edit/:id", ordersValidator, async (req, res) => {
+Router.put("/edit/:id", adminAuth, ordersValidator, async (req, res) => {
   try {
     const order = await db.Orders.findByPk(req.params.id);
     await order.update(req.body);
@@ -96,7 +103,7 @@ Router.put("/edit/:id", ordersValidator, async (req, res) => {
   }
 });
 
-Router.delete("/delete/:id", async (req, res) => {
+Router.delete("/delete/:id", auth || adminAuth, async (req, res) => {
   try {
     const order = await db.Orders.findByPk(req.params.id);
     await order.destroy();

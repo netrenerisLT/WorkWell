@@ -1,6 +1,24 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import axios from "axios";
+import MainContext from "../../context/MainContext.js";
 
 const Header = () => {
+  const { userInfo, setUserInfo, setAlert } = useContext(MainContext);
+
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    axios.get("/api/users/logout").then((resp) => {
+      setUserInfo({});
+      setAlert({
+        message: resp.data,
+        status: "success",
+      });
+      navigate("/");
+    });
+  };
+
   return (
     <header className="p-3 text-bg-dark">
       <div className="container">
@@ -18,40 +36,45 @@ const Header = () => {
                 Home
               </Link>
             </li>
-            <li>
-              <div className="nav-link px-2 text-secondary">Admin</div>
-              <ul>
-                <li>
-                  <Link
-                    to="/admin/suppliers"
-                    className="nav-link px-2 text-white"
-                  >
-                    Suppliers
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/admin/services"
-                    className="nav-link px-2 text-white"
-                  >
-                    Services
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/admin/workers"
-                    className="nav-link px-2 text-white"
-                  >
-                    Workers
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/admin/orders" className="nav-link px-2 text-white">
-                    Orders
-                  </Link>
-                </li>
-              </ul>
-            </li>
+            {userInfo.role === 1 && (
+              <li>
+                <div className="nav-link px-2 text-secondary">Admin</div>
+                <ul>
+                  <li>
+                    <Link
+                      to="/admin/suppliers"
+                      className="nav-link px-2 text-white"
+                    >
+                      Suppliers
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/admin/services"
+                      className="nav-link px-2 text-white"
+                    >
+                      Services
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/admin/workers"
+                      className="nav-link px-2 text-white"
+                    >
+                      Workers
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/admin/orders"
+                      className="nav-link px-2 text-white"
+                    >
+                      Orders
+                    </Link>
+                  </li>
+                </ul>
+              </li>
+            )}
             <li>
               <Link to="/suppliers" className="nav-link px-2 text-white">
                 Suppliers
@@ -62,11 +85,13 @@ const Header = () => {
                 Workers
               </Link>
             </li>
-            <li>
-              <Link to="/orders" className="nav-link px-2 text-white">
-                Orders
-              </Link>
-            </li>
+            {userInfo.id && (
+              <li>
+                <Link to="/orders" className="nav-link px-2 text-white">
+                  Orders
+                </Link>
+              </li>
+            )}
           </ul>
 
           <form
@@ -80,18 +105,29 @@ const Header = () => {
               aria-label="Search"
             />
           </form>
-
           <div className="text-end">
-            <Link to="/login">
-              <button type="button" className="btn btn-outline-light me-2">
-                Login
+            {userInfo.id ? (
+              <button
+                onClick={handleLogout}
+                type="button"
+                className="btn btn-outline-light me-2"
+              >
+                Logout
               </button>
-            </Link>
-            <Link to="/sign-up">
-              <button type="button" className="btn btn-warning me-2">
-                Sign-up
-              </button>
-            </Link>
+            ) : (
+              <>
+                <Link to="/sign-in">
+                  <button type="button" className="btn btn-outline-light me-2">
+                    Sign-in
+                  </button>
+                </Link>
+                <Link to="/sign-up">
+                  <button type="button" className="btn btn-warning me-2">
+                    Sign-up
+                  </button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>

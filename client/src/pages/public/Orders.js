@@ -27,7 +27,30 @@ const Orders = () => {
         });
 
         if (error.response.status === 401)
-          setTimeout(() => navigate("/login"), 2000);
+          setTimeout(() => navigate("/sign-in"), 2000);
+      });
+  };
+
+  const handleRatings = (e, workerId, orderId) => {
+    axios
+      .post("/api/ratings/worker/" + workerId + "/order/" + orderId, {
+        rating: e.target.value,
+      })
+      .then((resp) => {
+        setAlert({
+          message: resp.data,
+          status: "success",
+        });
+        setRefresh(!refresh);
+      })
+      .catch((error) => {
+        setAlert({
+          message: error.response.data,
+          status: "danger",
+        });
+
+        if (error.response.status === 401)
+          setTimeout(() => navigate("/sign-in"), 2000);
       });
   };
 
@@ -40,7 +63,7 @@ const Orders = () => {
           message: error.response.data,
           status: "danger",
         });
-        if (error.response.status === "401") navigate("/login");
+        if (error.response.status === "401") navigate("/sign-in");
       });
   }, [refresh, setAlert]);
 
@@ -58,7 +81,7 @@ const Orders = () => {
               <th>Order date</th>
               <th>Worker</th>
               <th>Supplier</th>
-              <th>Rating</th>
+              <th>Service rating</th>
             </tr>
           </thead>
           <tbody>
@@ -72,16 +95,23 @@ const Orders = () => {
                 </td>
                 <td>{order.service.supplier?.name}</td>
                 <td>
-                  <select className="form-control">
-                    <option value="" disabled>
-                      Add a review
-                    </option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                  </select>
+                  {order.rating ? (
+                    "Your rating: " + order.rating.rating
+                  ) : (
+                    <select
+                      className="form-control"
+                      onChange={(e) =>
+                        handleRatings(e, order.workerId, order.id)
+                      }
+                    >
+                      <option value="">Add a review</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                    </select>
+                  )}
                 </td>
                 <td>
                   <div className="d-flex justify-content-end gap-2">

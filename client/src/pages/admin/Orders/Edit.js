@@ -40,7 +40,7 @@ const EditOrders = () => {
         });
 
         if (error.response.status === 401)
-          setTimeout(() => navigate("/login"), 2000);
+          setTimeout(() => navigate("/sign-in"), 2000);
       });
   };
 
@@ -64,7 +64,9 @@ const EditOrders = () => {
 
   return (
     <>
-      <h1>Edit order</h1>
+      <div className="d-flex flex-wrap align-items-center justify-content-between justify-content-lg mt-4">
+        <h1>Edit order</h1>
+      </div>
       <form onSubmit={(e) => handleSubmit(e)}>
         <div className="form-group mb-2">
           <label className="mb-1">Order date</label>

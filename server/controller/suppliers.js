@@ -1,6 +1,7 @@
 import express from "express";
 import db from "../database/connect.js";
 import { suppliersValidator } from "../middleware/validate.js";
+import { adminAuth } from "../middleware/auth.js";
 
 const Router = express.Router();
 Router.get("/", async (req, res) => {
@@ -18,7 +19,7 @@ Router.get("/", async (req, res) => {
   }
 });
 
-Router.get("/single/:id", async (req, res) => {
+Router.get("/single/:id", adminAuth, async (req, res) => {
   try {
     const supplier = await db.Suppliers.findByPk(req.params.id, {
       attributes: ["name", "address", "phone_number", "email"],
@@ -32,7 +33,7 @@ Router.get("/single/:id", async (req, res) => {
   }
 });
 
-Router.post("/new", suppliersValidator, async (req, res) => {
+Router.post("/new", adminAuth, suppliersValidator, async (req, res) => {
   try {
     await db.Suppliers.create(req.body);
     res.send("New supplier created.");
@@ -46,7 +47,7 @@ Router.post("/new", suppliersValidator, async (req, res) => {
   }
 });
 
-Router.put("/edit/:id", suppliersValidator, async (req, res) => {
+Router.put("/edit/:id", adminAuth, suppliersValidator, async (req, res) => {
   try {
     const supplier = await db.Suppliers.findByPk(req.params.id);
     await supplier.update(req.body);
@@ -61,7 +62,7 @@ Router.put("/edit/:id", suppliersValidator, async (req, res) => {
   }
 });
 
-Router.delete("/delete/:id", async (req, res) => {
+Router.delete("/delete/:id", adminAuth, async (req, res) => {
   try {
     const supplier = await db.Suppliers.findByPk(req.params.id);
     await supplier.destroy();

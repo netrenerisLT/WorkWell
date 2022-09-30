@@ -39,7 +39,7 @@ const NewOrder = () => {
         });
 
         if (error.response.status === 401)
-          setTimeout(() => navigate("/login"), 2000);
+          setTimeout(() => navigate("/sign-in"), 2000);
       });
   };
 
@@ -52,7 +52,7 @@ const NewOrder = () => {
           message: error.response.data,
           status: "danger",
         });
-        if (error.response.status === "401") navigate("/login");
+        if (error.response.status === "401") navigate("/sign-in");
       });
   }, [setAlert]);
 

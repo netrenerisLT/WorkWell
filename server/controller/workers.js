@@ -3,6 +3,7 @@ import Sequelize from "sequelize";
 import db from "../database/connect.js";
 import upload from "../middleware/multer.js";
 import { workersValidator } from "../middleware/validate.js";
+import { adminAuth } from "../middleware/auth.js";
 
 const Router = express.Router();
 
@@ -15,15 +16,38 @@ Router.get("/", async (req, res) => {
       },
       {
         model: db.Ratings,
-        attributes: ["rating"],
+        attributes: {
+          exclude: [
+            "id",
+            "rating",
+            "userId",
+            "workerId",
+            "createdAt",
+            "updatedAt",
+          ],
+        },
       },
     ],
+    attributes: {
+      include: [
+        [Sequelize.fn("AVG", Sequelize.col("ratings.rating")), "total_rating"],
+      ],
+    },
+    group: ["id"],
   };
 
   if (req.query.supplier)
     options.where = {
       supplierId: req.query.supplier,
     };
+
+  if (req.query.sort)
+    options.order = [
+      [
+        Sequelize.literal("total_rating"),
+        req.query.sort === "1" ? "ASC" : "DESC",
+      ],
+    ];
   try {
     const workers = await db.Workers.findAll(options);
     res.send(workers);
@@ -35,7 +59,7 @@ Router.get("/", async (req, res) => {
   }
 });
 
-Router.get("/single/:id", async (req, res) => {
+Router.get("/single/:id", adminAuth, async (req, res) => {
   try {
     const worker = await db.Workers.findByPk(req.params.id, {
       attributes: ["first_name", "last_name", "photo", "supplierId"],
@@ -52,6 +76,7 @@ Router.get("/single/:id", async (req, res) => {
 Router.post(
   "/new",
   upload.single("photo"),
+  adminAuth,
   workersValidator,
   async (req, res) => {
     try {
@@ -72,6 +97,7 @@ Router.post(
 Router.put(
   "/edit/:id",
   upload.single("photo"),
+  adminAuth,
   workersValidator,
   async (req, res) => {
     try {
@@ -90,7 +116,7 @@ Router.put(
   }
 );
 
-Router.delete("/delete/:id", async (req, res) => {
+Router.delete("/delete/:id", adminAuth, async (req, res) => {
   try {
     const worker = await db.Workers.findByPk(req.params.id);
     await worker.destroy();

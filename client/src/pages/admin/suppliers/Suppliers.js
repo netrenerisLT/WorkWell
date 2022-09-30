@@ -29,7 +29,7 @@ const Suppliers = () => {
         });
 
         if (error.response.status === 401)
-          setTimeout(() => navigate("/login"), 2000);
+          setTimeout(() => navigate("/sign-in"), 2000);
       });
   };
 

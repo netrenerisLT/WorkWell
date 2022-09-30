@@ -55,6 +55,8 @@ try {
   database.Orders.belongsTo(database.Users);
   database.Services.hasOne(database.Orders);
   database.Orders.belongsTo(database.Services);
+  database.Orders.hasOne(database.Ratings);
+  database.Ratings.belongsTo(database.Orders);
   database.Workers.hasMany(database.Orders);
   database.Orders.belongsTo(database.Workers);
 

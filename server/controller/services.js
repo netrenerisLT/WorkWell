@@ -1,6 +1,7 @@
 import express from "express";
 import db from "../database/connect.js";
 import { servicesValidator } from "../middleware/validate.js";
+import { adminAuth } from "../middleware/auth.js";
 
 const Router = express.Router();
 
@@ -30,7 +31,7 @@ Router.get("/", async (req, res) => {
   }
 });
 
-Router.get("/single/:id", async (req, res) => {
+Router.get("/single/:id", adminAuth, async (req, res) => {
   try {
     const service = await db.Services.findByPk(req.params.id, {
       attributes: ["name", "duration", "price", "supplierId"],
@@ -44,7 +45,7 @@ Router.get("/single/:id", async (req, res) => {
   }
 });
 
-Router.post("/new", servicesValidator, async (req, res) => {
+Router.post("/new", adminAuth, servicesValidator, async (req, res) => {
   try {
     await db.Services.create(req.body);
     res.send("New service added.");
@@ -56,7 +57,7 @@ Router.post("/new", servicesValidator, async (req, res) => {
   }
 });
 
-Router.put("/edit/:id", servicesValidator, async (req, res) => {
+Router.put("/edit/:id", adminAuth, servicesValidator, async (req, res) => {
   try {
     const service = await db.Services.findByPk(req.params.id);
     await service.update(req.body);
@@ -69,7 +70,7 @@ Router.put("/edit/:id", servicesValidator, async (req, res) => {
   }
 });
 
-Router.delete("/delete/:id", async (req, res) => {
+Router.delete("/delete/:id", adminAuth, async (req, res) => {
   try {
     const service = await db.Services.findByPk(req.params.id);
     await service.destroy();
